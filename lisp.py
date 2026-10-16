@@ -65,3 +65,11 @@ def read(tokens):
     if token == "'":
         return [Symbol("quote"), read(tokens)]
     return atom(token)
+
+
+def parse_all(source):
+    tokens = tokenize(source)
+    exprs = []
+    while tokens:
+        exprs.append(read(tokens))
+    return exprs
