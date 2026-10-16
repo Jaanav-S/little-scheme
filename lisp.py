@@ -102,3 +102,22 @@ class Procedure:
         if len(args) != len(self.params):
             raise LispError(f"expected {len(self.params)} argument(s), got {len(args)}")
         return Env(self.params, args, self.env)
+
+
+def standard_env():
+    env = Env()
+    env.update(vars(math))
+    env.update({
+        "+": lambda *a: sum(a), "-": lambda a, *b: a - sum(b) if b else -a,
+        "*": lambda *a: math.prod(a), "/": operator.truediv, "quotient": operator.floordiv,
+        "remainder": operator.mod, "<": operator.lt, ">": operator.gt, "<=": operator.le,
+        ">=": operator.ge, "=": operator.eq, "eq?": operator.is_, "equal?": operator.eq,
+        "not": operator.not_, "abs": abs, "min": min, "max": max,
+        "cons": lambda x, y: [x] + list(y), "car": lambda x: x[0], "cdr": lambda x: x[1:],
+        "list": lambda *x: list(x), "null?": lambda x: x == [], "length": len,
+        "list?": lambda x: isinstance(x, list), "number?": lambda x: isinstance(x, (int, float)) and not isinstance(x, bool),
+        "symbol?": lambda x: isinstance(x, Symbol), "procedure?": callable,
+        "map": lambda f, xs: [f(x) for x in xs], "filter": lambda f, xs: [x for x in xs if f(x)],
+        "apply": lambda f, args: f(*args), "display": display, "newline": lambda: print(),
+    })
+    return env
