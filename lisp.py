@@ -30,3 +30,18 @@ def tokenize(source):
             tokens.append(paren or string or atom)
         pos = match.end()
     return tokens
+
+
+def atom(token):
+    if token.startswith('"'):
+        return token[1:-1].encode().decode("unicode_escape")
+    if token == "#t":
+        return True
+    if token == "#f":
+        return False
+    for kind in (int, float):
+        try:
+            return kind(token)
+        except ValueError:
+            pass
+    return Symbol(token)
