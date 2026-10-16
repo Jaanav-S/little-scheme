@@ -45,3 +45,23 @@ def atom(token):
         except ValueError:
             pass
     return Symbol(token)
+
+
+def read(tokens):
+    """Read one expression from the front of a token list (consuming it)."""
+    if not tokens:
+        raise LispError("unexpected end of input")
+    token = tokens.pop(0)
+    if token == "(":
+        expr = []
+        while tokens and tokens[0] != ")":
+            expr.append(read(tokens))
+        if not tokens:
+            raise LispError("missing )")
+        tokens.pop(0)
+        return expr
+    if token == ")":
+        raise LispError("unexpected )")
+    if token == "'":
+        return [Symbol("quote"), read(tokens)]
+    return atom(token)
