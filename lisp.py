@@ -73,3 +73,19 @@ def parse_all(source):
     while tokens:
         exprs.append(read(tokens))
     return exprs
+
+
+class Env(dict):
+    """A scope: a dict of bindings plus a link to the enclosing scope."""
+
+    def __init__(self, names=(), values=(), outer=None):
+        super().__init__(zip(names, values))
+        self.outer = outer
+
+    def find(self, name):
+        env = self
+        while env is not None:
+            if name in env:
+                return env
+            env = env.outer
+        raise LispError(f"undefined symbol: {name}")
