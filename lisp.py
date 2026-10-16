@@ -89,3 +89,16 @@ class Env(dict):
                 return env
             env = env.outer
         raise LispError(f"undefined symbol: {name}")
+
+
+class Procedure:
+    def __init__(self, params, body, env):
+        self.params, self.body, self.env = params, body, env
+
+    def __call__(self, *args):
+        return evaluate(self.body, self.bind(args))
+
+    def bind(self, args):
+        if len(args) != len(self.params):
+            raise LispError(f"expected {len(self.params)} argument(s), got {len(args)}")
+        return Env(self.params, args, self.env)
