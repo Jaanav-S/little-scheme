@@ -53,3 +53,12 @@ def test_tail_calls_do_not_overflow():
 def test_undefined_symbol():
     with pytest.raises(LispError):
         run("(nope 1)")
+
+
+def test_unbalanced_parens():
+    with pytest.raises(LispError):
+        run("(+ 1 2")
+
+
+def test_to_string():
+    assert to_string([1, True, "hi"]) == '(1 #t "hi")'
