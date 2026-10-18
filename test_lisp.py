@@ -48,3 +48,8 @@ def test_map_and_filter():
 def test_tail_calls_do_not_overflow():
     src = "(define (loop n acc) (if (= n 0) acc (loop (- n 1) (+ acc 1)))) (loop 100000 0)"
     assert run(src) == 100000
+
+
+def test_undefined_symbol():
+    with pytest.raises(LispError):
+        run("(nope 1)")
