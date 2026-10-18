@@ -241,3 +241,11 @@ def repl():
         except (LispError, ZeroDivisionError, TypeError, IndexError) as err:
             print(f"error: {err}")
         buffer = ""
+
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        with open(sys.argv[1], encoding="utf-8") as fh:
+            run(fh.read())
+    else:
+        repl()
