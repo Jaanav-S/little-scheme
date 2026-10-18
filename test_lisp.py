@@ -29,3 +29,8 @@ def test_closures():
     (c) (c) (c)
     """
     assert run(src) == 3
+
+
+def test_cond():
+    src = "(define (sign x) (cond ((< x 0) -1) ((= x 0) 0) (else 1))) (list (sign -5) (sign 0) (sign 9))"
+    assert run(src) == [-1, 0, 1]
