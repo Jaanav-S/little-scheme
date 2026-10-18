@@ -220,3 +220,24 @@ def balanced(text):
     for token in tokenize(text):
         depth += {"(": 1, ")": -1}.get(token, 0)
     return depth <= 0
+
+
+def repl():
+    env = standard_env()
+    buffer = ""
+    while True:
+        try:
+            line = input("> " if not buffer else ". ")
+        except (EOFError, KeyboardInterrupt):
+            print()
+            return
+        buffer += line + "\n"
+        try:
+            if not balanced(buffer):
+                continue
+            result = run(buffer, env)
+            if result is not None:
+                print(to_string(result))
+        except (LispError, ZeroDivisionError, TypeError, IndexError) as err:
+            print(f"error: {err}")
+        buffer = ""
