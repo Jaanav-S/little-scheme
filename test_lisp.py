@@ -39,3 +39,12 @@ def test_cond():
 def test_quote_and_lists():
     assert run("(car (cdr '(1 2 3)))") == 2
     assert run("(cons 0 (list 1 2))") == [0, 1, 2]
+
+
+def test_map_and_filter():
+    assert run("(map (lambda (x) (* x 2)) (filter (lambda (x) (> x 1)) '(1 2 3)))") == [4, 6]
+
+
+def test_tail_calls_do_not_overflow():
+    src = "(define (loop n acc) (if (= n 0) acc (loop (- n 1) (+ acc 1)))) (loop 100000 0)"
+    assert run(src) == 100000
