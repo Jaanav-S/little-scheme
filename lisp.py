@@ -204,3 +204,12 @@ def to_string(value):
     if isinstance(value, str) and not isinstance(value, Symbol):
         return '"' + value.replace('"', '\\"') + '"'
     return str(value)
+
+
+def run(source, env=None):
+    """Evaluate every expression in source and return the last value."""
+    env = env if env is not None else standard_env()
+    result = None
+    for expr in parse_all(source):
+        result = evaluate(expr, env)
+    return result
