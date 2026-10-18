@@ -190,3 +190,17 @@ def evaluate(x, env):
         if not callable(proc):
             raise LispError(f"not a procedure: {to_string(proc)}")
         return proc(*values)
+
+
+def to_string(value):
+    if value is True:
+        return "#t"
+    if value is False:
+        return "#f"
+    if isinstance(value, list):
+        return "(" + " ".join(map(to_string, value)) + ")"
+    if isinstance(value, Procedure):
+        return "#<procedure>"
+    if isinstance(value, str) and not isinstance(value, Symbol):
+        return '"' + value.replace('"', '\\"') + '"'
+    return str(value)
