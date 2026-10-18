@@ -34,3 +34,8 @@ def test_closures():
 def test_cond():
     src = "(define (sign x) (cond ((< x 0) -1) ((= x 0) 0) (else 1))) (list (sign -5) (sign 0) (sign 9))"
     assert run(src) == [-1, 0, 1]
+
+
+def test_quote_and_lists():
+    assert run("(car (cdr '(1 2 3)))") == 2
+    assert run("(cons 0 (list 1 2))") == [0, 1, 2]
