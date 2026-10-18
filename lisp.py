@@ -127,3 +127,66 @@ def display(value):
     """Print a value; strings are shown without quotes, like Scheme's display."""
     is_text = isinstance(value, str) and not isinstance(value, Symbol)
     print(value if is_text else to_string(value), end="")
+
+
+def evaluate(x, env):
+    """Evaluate an expression. Loops instead of recursing for tail positions."""
+    while True:
+        if isinstance(x, Symbol):
+            return env.find(x)[x]
+        if not isinstance(x, list):
+            return x
+        if not x:
+            raise LispError("cannot evaluate empty list")
+        op, *args = x
+        if op == "quote":
+            return args[0]
+        if op == "if":
+            test, then, *alt = args
+            x = then if evaluate(test, env) is not False else (alt[0] if alt else False)
+            continue
+        if op == "cond":
+            for test, *body in args:
+                if test == "else" or evaluate(test, env) is not False:
+                    x = [Symbol("begin"), *body]
+                    break
+            else:
+                return False
+            continue
+        if op == "define":
+            target, *body = args
+            if isinstance(target, list):  # (define (f a b) body...)
+                env[target[0]] = Procedure(target[1:], [Symbol("begin"), *body], env)
+            else:
+                env[target] = evaluate(body[0], env)
+            return None
+        if op == "set!":
+            name, value = args
+            env.find(name)[name] = evaluate(value, env)
+            return None
+        if op == "lambda":
+            params, *body = args
+            return Procedure(params, [Symbol("begin"), *body], env)
+        if op == "let":
+            bindings, *body = args
+            names = [b[0] for b in bindings]
+            values = [evaluate(b[1], env) for b in bindings]
+            env = Env(names, values, env)
+            x = [Symbol("begin"), *body]
+            continue
+        if op == "begin":
+            if not args:
+                return None
+            for expr in args[:-1]:
+                evaluate(expr, env)
+            x = args[-1]
+            continue
+
+        proc = evaluate(op, env)
+        values = [evaluate(arg, env) for arg in args]
+        if isinstance(proc, Procedure):
+            x, env = proc.body, proc.bind(values)
+            continue
+        if not callable(proc):
+            raise LispError(f"not a procedure: {to_string(proc)}")
+        return proc(*values)
