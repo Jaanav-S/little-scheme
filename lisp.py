@@ -213,3 +213,10 @@ def run(source, env=None):
     for expr in parse_all(source):
         result = evaluate(expr, env)
     return result
+
+
+def balanced(text):
+    depth = 0
+    for token in tokenize(text):
+        depth += {"(": 1, ")": -1}.get(token, 0)
+    return depth <= 0
