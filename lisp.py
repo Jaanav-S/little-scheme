@@ -121,3 +121,9 @@ def standard_env():
         "apply": lambda f, args: f(*args), "display": display, "newline": lambda: print(),
     })
     return env
+
+
+def display(value):
+    """Print a value; strings are shown without quotes, like Scheme's display."""
+    is_text = isinstance(value, str) and not isinstance(value, Symbol)
+    print(value if is_text else to_string(value), end="")
