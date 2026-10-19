@@ -23,3 +23,13 @@ python lisp.py examples.scm # run a file
 > (fact 20)
 2432902008176640000
 ```
+
+## How it works
+
+1. **Tokenize**: split the source into parentheses, quotes, strings and atoms.
+2. **Read**: turn tokens into nested Python lists (the program is data).
+3. **Evaluate**: walk the lists. Special forms like `if` and `lambda` are
+   handled in `evaluate`; everything else is a function call.
+
+Tail calls are implemented by looping inside `evaluate` instead of recursing
+when the last expression of a body or branch is evaluated.
