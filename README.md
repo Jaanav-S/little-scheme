@@ -33,3 +33,9 @@ python lisp.py examples.scm # run a file
 
 Tail calls are implemented by looping inside `evaluate` instead of recursing
 when the last expression of a body or branch is evaluated.
+
+## Tests
+
+```
+python -m pytest
+```
