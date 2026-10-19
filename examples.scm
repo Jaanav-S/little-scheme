@@ -19,3 +19,7 @@
 (display "sum of squares 1..10 = ")
 (display (sum (map (lambda (x) (* x x)) (range 1 11))))
 (newline)
+
+(define (compose f g) (lambda (x) (f (g x))))
+(define inc-then-double (compose (lambda (x) (* 2 x)) (lambda (x) (+ x 1))))
+(display "compose: ") (display (inc-then-double 4)) (newline)
