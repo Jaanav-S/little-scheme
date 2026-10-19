@@ -12,3 +12,10 @@
 
 (define (range a b)
   (if (>= a b) '() (cons a (range (+ a 1) b))))
+
+(define (sum xs)
+  (if (null? xs) 0 (+ (car xs) (sum (cdr xs)))))
+
+(display "sum of squares 1..10 = ")
+(display (sum (map (lambda (x) (* x x)) (range 1 11))))
+(newline)
